@@ -1,0 +1,126 @@
+<!-- -------------------------------------------- -->
+<!-- --------- LAB 4E Web Application ----------- -->
+<!-- 
+    Mashed up by: Mark McDermott   from various sources
+    Project:      EE445L Lab 4E
+    Date:         6/6/23
+-->
+
+
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>MQTT Control</title>
+		
+		<style>
+		.button {
+  			border: none;
+  			color: white;
+  			padding: 15px 32px;
+  			text-align: center;
+  			text-decoration: none;
+  			display: inline-block;
+  			font-size: 14px;
+  			margin: 4px 2px;
+  			cursor: pointer;
+		}
+
+		.button_am_pm  {background-color: #4CAF50;} /* Green */
+		.button_mode   {background-color: #008CBA;} /* Blue */
+		.button_hour   {background-color: #545faa;} /* ?? */
+		.button_min    {background-color: #2a5121;} /* ?? */
+		.button_sec    {background-color: #4c827b;} /* ?? */
+		.button_reset  {background-color: yellow;}
+		
+		hr {
+		    border: none;
+		    height: 5px;
+		    /* Set the hr color */
+		    background-color: #a2ecee;  
+		}
+		</style>
+
+        <link rel = "stylesheet" href = "lib/styles.css">        
+	</head>
+
+	<body>
+
+        
+
+        <h3 style="font-family:verdana;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Board Time  </h3>
+
+        <!-- EMQX MQTT Client-->
+	<script src="lib/mqtt.min.js"></script>
+		
+        <!-- Our Code Goes Here -->
+
+        <div id="board-clock" style="font-family: monospace; font-size: 40px; font-weight: bold; color: #07879e;">
+			<span id="hour_display">00</span>:<span id="minute_display">00</span>:<span id="second_display">00</span>
+			<span id="ampm_display" style="font-size: 20px; margin-left: 10px;"></span>
+		</div>
+
+		<h3 style="font-family:verdana;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Internet Time </h3>
+
+		<div id="digital-clock" style="font-family: monospace; font-size: 40px; font-weight: bold; color: #07879e;">
+			<span id="internet_hour_display">00</span>:<span id="internet_minute_display">00</span>:<span id="internet_second_display">00</span>
+			<span id="internet_ampm_display" style="font-size: 20px; margin-left: 10px;"></span>
+		</div>
+
+		<div>
+			<h3>Current Temperature: <span id="temp_display">--</span></h3>
+			<div style="display: flex; align-items: flex-end; gap: 12px; margin: 8px 0 16px 0;">
+				<div id="thermo_track" style="position: relative; width: 36px; height: 180px; border: 2px solid #666; border-radius: 18px; background: #eef3ff; overflow: hidden;">
+					<div id="thermo_fill" style="position: absolute; left: 0; bottom: 0; width: 100%; height: 0%; background: linear-gradient(to top, #2b6de9, #47c9ff);"></div>
+				</div>
+				<div style="height: 180px; display: flex; flex-direction: column; justify-content: space-between;">
+					<div style="display: flex; align-items: center; font-family: verdana; font-size: 11px;"><span style="display: inline-block; width: 10px; border-top: 1px solid #444; margin-right: 5px;"></span>90</div>
+					<div style="display: flex; align-items: center; font-family: verdana; font-size: 11px;"><span style="display: inline-block; width: 10px; border-top: 1px solid #444; margin-right: 5px;"></span>80</div>
+					<div style="display: flex; align-items: center; font-family: verdana; font-size: 11px;"><span style="display: inline-block; width: 10px; border-top: 1px solid #444; margin-right: 5px;"></span>70</div>
+					<div style="display: flex; align-items: center; font-family: verdana; font-size: 11px;"><span style="display: inline-block; width: 10px; border-top: 1px solid #444; margin-right: 5px;"></span>60</div>
+					<div style="display: flex; align-items: center; font-family: verdana; font-size: 11px;"><span style="display: inline-block; width: 10px; border-top: 1px solid #444; margin-right: 5px;"></span>50</div>
+				</div>
+			</div>
+			<h3>System Mode: <span id="mode_display">--</span></h3>
+			<h3>Setting Mode: <span id="setting_type">--</span></h3>
+		</div>	
+
+		<script src="clock_page.js"></script>
+        <br> <br> 
+	  
+        <p>
+	<!-- Add more buttons for the first row here-->
+        <button class="button button_mode"  onclick="toggleTime();"  style="width: 150px; height: 40px">12/24</button>
+		
+		<button class="button button_mode"  onclick="toggleMode();"  style="width: 150px; height: 40px">GEN/SET</button>
+
+		<button class="button button_mode"  onclick="toggleSetting();"  style="width: 150px; height: 40px">CLOCK/ALARM</button>
+		
+		<button class="button button_am_pm"   onclick="reset();"        style="width: 150px; height: 40px">RESET</button> 
+
+	  </p>
+		
+	  <p>
+	<!-- Add more buttons for the second row here-->
+        <button class="button button_hour"   onclick="decHour();"        style="width: 150px; height: 40px">HOUR --</button> 
+
+		<button class="button button_hour"   onclick="incHour();"        style="width: 150px; height: 40px">HOUR ++</button> 
+
+		<button class="button button_min"   onclick="decMin();"        style="width: 150px; height: 40px">MIN --</button> 
+
+		<button class="button button_min"   onclick="incMin();"        style="width: 150px; height: 40px">MIN ++</button> 
+
+	  </p>
+		
+		
+		
+        <!-- Start it up! -->
+        
+		<script>connect();</script>
+
+        
+        
+
+	</body>
+</html>
